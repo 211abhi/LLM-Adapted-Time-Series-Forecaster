@@ -1,7 +1,7 @@
 # base_config.yaml — Single source of truth. No hardcoded values in source files.
 
 project:
-  name: "xauusd-llm-forecaster"
+  name: "llm-adapted-time-series-forecaster"
   seed: 42
   device: "cuda"          # "cuda" or "cpu"
   log_dir: "logs/ETTh1/"  # per-dataset-variant subfolder — see notebook's DATASET_VARIANTS

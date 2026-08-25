@@ -6,7 +6,9 @@
 *.yml
 !configs/base_config.example.yaml
 *.md
+!README.md
 *.txt
+!requirements.txt
 
 # ── Data (never commit raw/processed data) ────────────────────
 data/

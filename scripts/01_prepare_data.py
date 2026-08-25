@@ -64,8 +64,8 @@ def main(config_path: str) -> None:
 
     processed_dir = Path(cfg["data"]["processed_dir"])
     processed_dir.mkdir(parents=True, exist_ok=True)
-    df_norm.to_csv(processed_dir / "ett_processed.csv", index=False)
-    print(f"Saved processed data → {processed_dir / 'ett_processed.csv'}")
+    df_norm.to_csv(processed_dir / "processed.csv", index=False)
+    print(f"Saved processed data → {processed_dir / 'processed.csv'}")
 
     # Save norm stats
     import json

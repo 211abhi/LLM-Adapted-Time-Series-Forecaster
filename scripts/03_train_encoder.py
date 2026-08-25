@@ -60,7 +60,7 @@ def main(config_path: str, force: bool = False) -> None:
         return
 
     print("Loading processed data...")
-    df = pd.read_csv(processed_dir / "ett_with_regimes.csv", parse_dates=["datetime"])
+    df = pd.read_csv(processed_dir / "with_regimes.csv", parse_dates=["datetime"])
     train_ratio = cfg["data"]["split_ratios"]["train"]
     val_ratio = cfg["data"]["split_ratios"]["val"]
     n = len(df)

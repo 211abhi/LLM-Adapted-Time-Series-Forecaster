@@ -71,7 +71,7 @@ alignment:
   n_negatives: 4          # negatives per positive pair
 
 encoder_training:
-  epochs: 20
+  epochs: 50
   batch_size: 64
   lr: 1.0e-4
   weight_decay: 1.0e-5
@@ -113,7 +113,7 @@ prediction_head:
   checkpoint_path: "checkpoints/pred_head/ETTh1/best_pred_head.pt"
 
 pred_head_training:
-  epochs: 30
+  epochs: 100
   batch_size: 32
   lr: 1.0e-3
   weight_decay: 1.0e-5

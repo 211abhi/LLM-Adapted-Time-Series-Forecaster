@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import time
+
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
@@ -48,6 +50,10 @@ class CMAESOptimizer:
         self.patience = cc["early_stop_patience"]
         self.eval_batch_size = cc["eval_batch_size"]
         self.max_eval_batches = cc.get("max_eval_batches", 32)
+        # Wall-clock budget so one search can't eat a whole Kaggle/Colab session
+        # (12h hard limit). Stopping early is safe: the best prompt is already on
+        # disk and the next --force run warm-starts from it.
+        self.max_seconds = cc.get("max_hours", float("inf")) * 3600
 
         # Fixed random projection matrix: subspace → full_dim
         rng = np.random.RandomState(42)
@@ -144,6 +150,7 @@ class CMAESOptimizer:
         patience_counter = 0
 
         generation = 0
+        start = time.time()
         while not es.stop():
             solutions = es.ask()
             fitnesses = [self._evaluate(z, cached_proj, cached_targets) for z in solutions]
@@ -162,9 +169,15 @@ class CMAESOptimizer:
                 patience_counter += 1
 
             if generation % 10 == 0:
-                print(f"Gen {generation:4d} | best_mae={best_loss:.6f} | sigma={es.sigma:.6f}")
+                print(f"Gen {generation:4d} | best_mae={best_loss:.6f} | sigma={es.sigma:.6f} "
+                      f"| {time.time() - start:.0f}s")
                 np.save(checkpoint_path.replace(".npy", "_latest.npy"),
                         self._subspace_to_prompt(best_z))
+
+            if time.time() - start > self.max_seconds:
+                print(f"CMA-ES time budget ({self.max_seconds / 3600:g}h) reached at generation "
+                      f"{generation} | best_mae={best_loss:.6f}")
+                break
 
             if patience_counter >= self.patience:
                 print(f"CMA-ES early stop at generation {generation}")
